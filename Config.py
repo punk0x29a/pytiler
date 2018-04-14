@@ -1,10 +1,10 @@
-from utils.Keycodes import keycodes
+from utils.Keycodes import keycodes, modifiers
 import utils.pytweening as pytweening
 
 class Keys():
 
     # Modifier key
-    modifier = keycodes["Mod1"] # AltLeft as default modifier
+    modifier = modifiers["Mod1"] # AltLeft as default modifier
 
     # Commands: mod + command
     mode     = keycodes["Space"] # Toggle mode: Master on the left, master on the top,  master on the right, master on the bottom and floating mode

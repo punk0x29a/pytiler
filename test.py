@@ -3,8 +3,6 @@ from Xlib.ext.xtest import fake_input
 from Xlib import X
 from ewmh import EWMH
 import os
-
-
 from Config import Keys
 import classes.Window as Window
 import classes.Screen as Screen
@@ -12,21 +10,14 @@ import classes.Screen as Screen
 NewScreen = Screen.Screen
 NewWindow = Window.Window
 
-
 ewmh = EWMH()
 display = Display()
 root = display.screen().root
 
 BUTTON_PRESS    = 2
-BUTTON_RELEASE  = 3
-command_mode    = False
 
 desktops = []
-
-def dump(obj):
-    for attr in dir(obj):
-        print("obj.%s = %r" % (attr, getattr(obj, attr)))
-
+keycodes = [Keys.mode, Keys.shrinkm, Keys.expandm, Keys.decm, Keys.incm]
 
 def update_desktops():
 
@@ -39,28 +30,38 @@ def update_desktops():
 
 def handle_event(event):
 
-    global command_mode
-    global ewmh
-    global root
-    global display
     keycode = event.detail
     if event.type == BUTTON_PRESS:
-        print(keycode)
+        if keycode == Keys.mode:
+            pass
+        if keycode == Keys.shrinkm:
+            pass
+        if keycode == Keys.expandm:
+            pass
+        if keycode == Keys.incm:
+            pass
+        if keycode == Keys.decm:
+            pass
 
+def grab_keycodes():
 
+    root.change_attributes(event_mask = X.KeyPressMask)
+    for keycode in keycodes:
+        root.grab_key(keycode, Keys.modifier, 1, X.GrabModeAsync, X.GrabModeAsync)
+
+def grab_events():
+
+    event = root.display.next_event()
+    handle_event(event)
+
+def update():
+
+    grab_events()
 
 def main():
 
-    root.change_attributes(event_mask = X.KeyPressMask)
-    for keycode in Keys.keycodes:
-        root.grab_key(keycode, Keys.modifier, 1, X.GrabModeAsync, X.GrabModeAsync)
+    grab_keycodes()
     while True:
-        event = root.display.next_event()
-        handle_event(event)
-
-
-for window in ewmh.getClientList():
-    dump(window)
-    break
+        update()
 
 main()
