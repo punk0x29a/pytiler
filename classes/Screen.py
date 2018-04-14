@@ -1,7 +1,5 @@
-import sys
-sys.path.append('..')
 from Config import Settings
-import Window
+import classes.Window
 
 # Margins
 mtop    = Settings.margin_top

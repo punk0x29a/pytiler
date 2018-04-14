@@ -1,3 +1,4 @@
+from Xlib import X
 keycodes = {
 "F1":67,
 "F2":68,
@@ -68,6 +69,14 @@ keycodes = {
 "CtrlRight":109,
 "LogoRight":116,
 "LogoLeft":115,
+"Shift": X.ShiftMask,
+"Control": X.ControlMask,
+"Lock": X.LockMask,
+"Mod1": X.Mod1Mask,
+"Mod2": X.Mod2Mask,
+"Mod3": X.Mod3Mask,
+"Mod4": X.Mod4Mask,
+"Mod5": X.Mod5Mask,
 # Keypad
 "KP0":90,
 "KP1":87,
