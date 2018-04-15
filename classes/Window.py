@@ -6,6 +6,8 @@ from utils import pytweening
 from Config import Settings
 from datetime import timedelta
 from datetime import datetime
+from ewmh import EWMH
+ewmh = EWMH()
 
 speed  = Settings.speed
 easing = Settings.easing
@@ -75,7 +77,8 @@ class Window():
         self.height = self.current_value_between(self.hlast, self.hnext)
 
     def set_client(self):
-        pass
+
+        ewmh.setMoveResizeWindow(self.client, 0, self.x, self.y, self.width, self.height)
 
     def in_place(self):
 
@@ -96,6 +99,7 @@ class Window():
             self.set_client()
 
     def revert(self):
+
         self.set(self.xoriginal, self.yoriginal, self.woriginal, self.horiginal)
 
     def debug(self):

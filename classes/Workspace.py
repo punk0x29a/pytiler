@@ -28,6 +28,11 @@ class Workspace():
     layouts = ["Left", "Right", "Top", "Bottom", "Floating"]
     layout = layouts[0]
 
+    def init(self, width, height):
+
+        self.width = width
+        self.height = height
+
     def change_master(self, direction):
 
         if self.layout == "Left" or self.layout == "Right":
@@ -228,6 +233,14 @@ class Workspace():
             else:
                 fine_indexes.append(index)
         self.remove_closed_windows(fine_indexes)
+
+    def update(self):
+
+        for window in self.windows:
+            window.update()
+
+    def debug(self):
+        print(len(self.windows))
 
 
 
