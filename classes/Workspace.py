@@ -28,8 +28,9 @@ class Workspace():
     layouts = ["Left", "Right", "Top", "Bottom", "Floating"]
     layout = layouts[0]
 
-    def init(self, width, height):
+    def init(self, display, width, height):
 
+        self.display = display
         self.width = width
         self.height = height
 
@@ -49,17 +50,21 @@ class Workspace():
             self.master_extra_horizontal = self.width - mleft - mright - 2*gap
         if self.master_extra_vertical > self.height - mtop - mbottom - 2*gap:
             self.master_extra_vertical = self.height - mtop - mbottom - 2*gap
+        self.update_condition()
 
     def expand_master(self):
         self.change_master(1)
+        self.update_condition()
 
     def shrink_master(self):
         self.change_master(-1)
+        self.update_condition()
 
     def increase_master(self):
         self.master = self.master + 1
         if self.master >= len(self.windows):
             self.master = 0
+        self.update_condition()
 
     def decrease_master(self):
         if len(self.windows) == 0:
@@ -67,6 +72,7 @@ class Workspace():
         self.master = self.master - 1
         if self.master < 0:
             self.master = 0
+        self.update_condition()
 
     def cycle_layout(self):
 
@@ -75,6 +81,7 @@ class Workspace():
         if index >= len(self.layouts):
             index = 0
         self.layout = self.layouts[index]
+        self.update_condition()
 
     def x_available_space(self):
 
@@ -143,15 +150,15 @@ class Workspace():
 
     def set_tiling(self, sizes, coordinates, horizontal=True):
 
-        master_width  = sizes[1]
-        master_height = sizes[2]
-        slaves_width  = sizes[3]
-        slaves_height = sizes[4]
+        master_width  = sizes[0]
+        master_height = sizes[1]
+        slaves_width  = sizes[2]
+        slaves_height = sizes[3]
 
-        xmaster = coordinates[1]
-        ymaster = coordinates[2]
-        xslave  = coordinates[3]
-        yslave  = coordinates[4]
+        xmaster = coordinates[0]
+        ymaster = coordinates[1]
+        xslave  = coordinates[2]
+        yslave  = coordinates[3]
 
         for index, window in enumerate(self.windows):
             if index == self.master:
@@ -165,26 +172,26 @@ class Workspace():
 
     def set_left(self):
 
-        sizes = self.horizontal_tiling_sizes(1)
+        sizes = self.horizontal_tiling_sizes()
         coordinates = self.horizontal_tiling_positions(sizes, 1)
         self.set_tiling(sizes, coordinates, True)
 
 
     def set_right(self):
 
-        sizes = self.horizontal_tiling_sizes(-1)
+        sizes = self.horizontal_tiling_sizes()
         coordinates = self.horizontal_tiling_positions(sizes, -1)
         self.set_tiling(sizes, coordinates, True)
 
     def set_top(self):
 
-        sizes = self.vertical_tiling_sizes(1)
+        sizes = self.vertical_tiling_sizes()
         coordinates = self.vertical_tiling_positions(sizes, 1)
         self.set_tiling(sizes, coordinates, False)
 
     def set_bottom(self):
 
-        sizes = self.vertical_tiling_sizes(-1)
+        sizes = self.vertical_tiling_sizes()
         coordinates = self.vertical_tiling_positions(sizes, -1)
         self.set_tiling(sizes, coordinates, False)
 
@@ -206,20 +213,30 @@ class Workspace():
     def get_window_index(self, client):
 
         for index, window in enumerate(self.windows):
-            if window.client == client:
+            if str(window.client.id) == str(client.id):
                 return index
+            else:
+                pass
+        return -1
+
+    def update_condition(self):
+
+        for window in self.windows:
+            window.set_last_update()
 
     def add_window(self, client):
 
             window = NewWindow()
             data = client.get_geometry()
-            window.init(client, data.x, data.y, data.width, data.height)
+            window.init(self.display, client, data.x, data.y, data.width, data.height)
             self.windows.append(window)
+            self.update_condition()
 
     def remove_closed_windows(self, fine_indexes):
 
         for index, window in enumerate(self.windows[:]):
             if index not in fine_indexes:
+                self.update_condition()
                 del self.windows[index]
 
     def allign_windows(self, clients):
@@ -227,7 +244,7 @@ class Workspace():
         fine_indexes = []
         for client in clients:
             index = self.get_window_index(client)
-            if not index:
+            if index < 0:
                 self.add_window(client)
                 fine_indexes.append(len(self.windows)-1)
             else:
@@ -236,11 +253,14 @@ class Workspace():
 
     def update(self):
 
+        self.update_layout()
         for window in self.windows:
             window.update()
 
     def debug(self):
         print(len(self.windows))
+        for window in self.windows:
+            window.debug()
 
 
 

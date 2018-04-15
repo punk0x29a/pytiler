@@ -20,14 +20,14 @@ class Settings():
 
     # Margins from the edge of the screen
     # Useful when utilizing panels that won't put windows aside
-    margin_top    = 0
-    margin_bottom = 0
-    margin_left   = 0
-    margin_right  = 0
+    margin_top    = 40
+    margin_bottom = 40
+    margin_left   = 40
+    margin_right  = 40
 
     # Useless gap between windows and screen edges
     # Adds to the margins
-    gap = 0
+    gap = 10
 
     # Moving and resizing speed in seconds
     speed = 0.5
