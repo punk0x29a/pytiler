@@ -1,5 +1,7 @@
 from Config import Settings
-import classes.Window
+import classes.Window as Window
+
+NewWindow = Window.Window
 
 # Margins
 mtop    = Settings.margin_top
@@ -9,7 +11,7 @@ mright  = Settings.margin_right
 gap     = Settings.gap
 master_resize_rate = Settings.master_resize_rate
 
-class Screen():
+class Workspace():
 
     # Dimensions
     width  = 0
@@ -195,6 +197,39 @@ class Screen():
             self.set_top()
         if self.layout == "Bottom":
             self.set_bottom()
+
+    def get_window_index(self, client):
+
+        for index, window in enumerate(self.windows):
+            if window.client == client:
+                return index
+
+    def add_window(self, client):
+
+            window = NewWindow()
+            data = client.get_geometry()
+            window.init(client, data.x, data.y, data.width, data.height)
+            self.windows.append(window)
+
+    def remove_closed_windows(self, fine_indexes):
+
+        for index, window in enumerate(self.windows[:]):
+            if index not in fine_indexes:
+                del self.windows[index]
+
+    def allign_windows(self, clients):
+
+        fine_indexes = []
+        for client in clients:
+            index = self.get_window_index(client)
+            if not index:
+                self.add_window(client)
+                fine_indexes.append(len(self.windows)-1)
+            else:
+                fine_indexes.append(index)
+        self.remove_closed_windows(fine_indexes)
+
+
 
 
 
