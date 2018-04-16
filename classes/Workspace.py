@@ -156,13 +156,10 @@ class Workspace():
             frame = frame.query_tree().parent
         data = frame.get_geometry()
         width_difference = data.width - width
-        height_diifference = data.height - height
+        height_difference = data.height - height
         final_width = width - width_difference
-        final_height = height - height_diifference
+        final_height = height - height_difference
         return final_width, final_height
-
-
-
 
     def set_tiling(self, sizes, coordinates, horizontal=True):
 
