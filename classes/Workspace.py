@@ -28,8 +28,9 @@ class Workspace():
     layouts = ["Left", "Right", "Top", "Bottom", "Floating"]
     layout = layouts[0]
 
-    def init(self, display, width, height):
+    def init(self, ewmh, display, width, height):
 
+        self.ewmh = ewmh
         self.display = display
         self.width = width
         self.height = height
@@ -148,6 +149,21 @@ class Workspace():
         yslave = ymaster + master_height * direction + gap * direction
         return (xmaster, ymaster, xslave, yslave)
 
+    def adjust_for_decorations(self, width, height, client):
+
+        frame = client
+        while frame.query_tree().parent != self.ewmh.root:
+            frame = frame.query_tree().parent
+        data = frame.get_geometry()
+        width_difference = data.width - width
+        height_diifference = data.height - height
+        final_width = width - width_difference
+        final_height = height - height_diifference
+        return final_width, final_height
+
+
+
+
     def set_tiling(self, sizes, coordinates, horizontal=True):
 
         master_width  = sizes[0]
@@ -162,8 +178,10 @@ class Workspace():
 
         for index, window in enumerate(self.windows):
             if index == self.master:
+                master_width, master_height = self.adjust_for_decorations(master_width, master_height, window.client)
                 window.set(xmaster, ymaster, master_width, master_height)
             else:
+                slaves_width, slaves_height = self.adjust_for_decorations(slaves_width, slaves_height, window.client)
                 window.set(xslave, yslave, slaves_width, slaves_height)
                 if horizontal:
                     yslave = yslave + slaves_height + gap

@@ -37,7 +37,7 @@ class PyTiler():
                 "number": self.desktop_number,
                 "workspace": self.NewWorkspace()
             }
-            wrapper["workspace"].init(self.display, self.ewmh.getDesktopGeometry()[0], self.ewmh.getDesktopGeometry()[1])
+            wrapper["workspace"].init(self.ewmh, self.display, self.ewmh.getDesktopGeometry()[0], self.ewmh.getDesktopGeometry()[1])
             self.desktops.append(wrapper)
 
     def update_desktops(self):
